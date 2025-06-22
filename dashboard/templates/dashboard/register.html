@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un compte</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #022B3A;
+            margin: 0;
+            padding: 0;
+        }
+
+        .register-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .register-card {
+            background-color: #011F2A;
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-shadow: 0 0 15px 2px rgba(0, 255, 0, 0.1);
+            text-align: center;
+            width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .register-card img {
+            width: 175px;
+            margin-bottom: 1px;
+        }
+
+        h2 {
+            color: #00FF00;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: white;
+            text-align: left;
+            margin-bottom: 5px;
+            margin-left: 8px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00DDB3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: white;
+            font-size: 0.85em;
+        }
+
+        .register-link {
+            margin-top: 15px;
+            color: white;
+        }
+
+        .register-link a {
+            color: #00FF00;
+            font-weight: bold;
+        }
+
+        .errorlist {
+            color: #FF8080;
+            text-align: left;
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <img src="{% static 'dashboard/logo_biosynergie-no_bg.png' %}" alt="Logo BioSynergie">
+            <h2>Créer un compte</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                <label for="id_username">Nom d'utilisateur :</label>
+                {{ form.username }}
+
+                <label for="id_password1">Mot de passe :</label>
+                {{ form.password1.errors }}
+                {{ form.password1 }}
+
+                <label for="id_password2">Confirmation du mot de passe :</label>
+                {{ form.password2.errors }}
+                {{ form.password2 }}
+
+                <button type="submit">S'inscrire</button>
+            </form>
+            <div class="register-link">
+                Déjà inscrit ? <a href="{% url 'login' %}">Se connecter</a>
+            </div>
+            <div class="footer">
+                Accès réservé | BioSynergie © 2025
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

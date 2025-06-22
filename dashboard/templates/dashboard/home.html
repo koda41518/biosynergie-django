@@ -1,0 +1,206 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Données en temps réel - BioSynergie{% endblock %}
+
+{% block content %}
+<h1>📊 Données en temps réel</h1>
+
+<div class="grid">
+    <div class="card"><div class="label">Température 🌡️</div><div class="value" id="temp">-- °C</div></div>
+    <div class="card"><div class="label">pH 🧬</div><div class="value" id="ph">--</div></div>
+    <div class="card"><div class="label">Pression 🧪</div><div class="value" id="press">-- Pa</div></div>
+    <div class="card"><div class="label">Ensoleillement ☀️</div><div class="value" id="sun">-- W/m²</div></div>
+    <div class="card"><div class="label">Méthane 🔥</div><div class="value" id="methane">-- m³</div></div>
+    <div class="card"><div class="label">Activité algues 🌿</div><div class="value" id="algae">--</div></div>
+</div>
+
+<h2>📈 Suivi de capteur</h2>
+<div style="margin-bottom: 1rem;">
+  <label><input type="radio" name="graphToggle" value="temp" checked> Température 🌡️</label>
+  <label><input type="radio" name="graphToggle" value="ph"> pH 🧬</label>
+  <label><input type="radio" name="graphToggle" value="press"> Pression 🧪</label>
+  <label><input type="radio" name="graphToggle" value="sun"> Ensoleillement ☀️</label>
+  <label><input type="radio" name="graphToggle" value="methane"> Méthane 🔥</label>
+  <label><input type="radio" name="graphToggle" value="algae"> Algues 🌿</label>
+</div>
+
+<canvas id="sensorChart" style="max-width: 100%; height: 400px;"></canvas>
+
+<h2>📋 Données enregistrées (lecture progressive)</h2>
+<button onclick="startTableAnimation()" style="margin-bottom: 10px;">🔄 Relancer l'affichage</button>
+
+<table id="historyTable" border="1" style="width: 100%; border-collapse: collapse;">
+  <thead>
+    <tr>
+      <th>Heure</th>
+      <th>Température (°C)</th>
+      <th>pH</th>
+      <th>Pression (Pa)</th>
+      <th>Ensoleillement (W/m²)</th>
+      <th>Méthane (m³)</th>
+      <th>Algues</th>
+    </tr>
+  </thead>
+  <tbody id="historyBody">
+  </tbody>
+</table>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ✅ Script de déconnexion automatique à la fermeture de l'onglet -->
+<script>
+window.addEventListener("beforeunload", function () {
+    navigator.sendBeacon("/logout/");
+});
+</script>
+
+<!-- Bloc JSON propre -->
+<script id="history-json" type="application/json">
+[
+  {% for data in history %}
+    {
+      "time": "{{ data.timestamp|date:'H:i:s'|escapejs }}",
+      "temperature": {{ data.temperature }},
+      "ph": {{ data.ph }},
+      "pressure": {{ data.pressure }},
+      "sun": {{ data.sun_intensity }},
+      "methane": {{ data.methane_production }},
+      "algae": {{ data.algae_activity }}
+    }{% if not forloop.last %}, {% endif %}
+  {% endfor %}
+]
+</script>
+
+<script>
+const historyData = JSON.parse(document.getElementById("history-json").textContent);
+
+// Tableau progressif
+let tableInterval;
+let tableIndex = 0;
+
+function startTableAnimation() {
+  const tbody = document.getElementById("historyBody");
+  tbody.innerHTML = "";
+  tableIndex = 0;
+  clearInterval(tableInterval);
+
+  tableInterval = setInterval(() => {
+    if (tableIndex >= historyData.length) {
+      clearInterval(tableInterval);
+      return;
+    }
+
+    const d = historyData[tableIndex];
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${d.time}</td>
+      <td>${d.temperature}</td>
+      <td>${d.ph}</td>
+      <td>${d.pressure}</td>
+      <td>${d.sun}</td>
+      <td>${d.methane}</td>
+      <td>${d.algae}</td>
+    `;
+    tbody.appendChild(row);
+    tableIndex++;
+  }, 2000);
+}
+
+startTableAnimation();
+
+// Graphe dynamique
+const MAX_POINTS = 10;
+let readingCount = 0;
+const memory = {
+    temp: [], ph: [], press: [], sun: [], methane: [], algae: [], time: []
+};
+let currentSensor = "temp";
+
+const chart = new Chart(document.getElementById("sensorChart").getContext("2d"), {
+    type: "line",
+    data: {
+        labels: [],
+        datasets: [{
+            label: "Température (°C)",
+            data: [],
+            borderColor: "red",
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: { y: { beginAtZero: false } }
+    }
+});
+
+document.querySelectorAll("input[name='graphToggle']").forEach(input => {
+    input.addEventListener("change", () => {
+        currentSensor = input.value;
+        updateChartFromMemory();
+    });
+});
+
+function updateChartFromMemory() {
+    chart.data.labels = [...memory.time];
+    chart.data.datasets[0].data = [...memory[currentSensor]];
+    chart.data.datasets[0].label = inputLabel(currentSensor);
+    chart.data.datasets[0].borderColor = inputColor(currentSensor);
+    chart.update();
+}
+
+function inputLabel(key) {
+    return {
+        temp: "Température (°C)",
+        ph: "pH",
+        press: "Pression (Pa)",
+        sun: "Ensoleillement (W/m²)",
+        methane: "Méthane (m³)",
+        algae: "Algues"
+    }[key];
+}
+
+function inputColor(key) {
+    return {
+        temp: "red",
+        ph: "blue",
+        press: "green",
+        sun: "orange",
+        methane: "purple",
+        algae: "brown"
+    }[key];
+}
+
+function addToMemory(key, value) {
+    memory[key].push(value);
+    if (memory[key].length > MAX_POINTS) memory[key].shift();
+}
+
+async function fetchSensorData() {
+    const res = await fetch("/api/data/");
+    const d = await res.json();
+    const now = new Date().toLocaleTimeString();
+
+    document.getElementById("temp").textContent = d.temperature + " °C";
+    document.getElementById("ph").textContent = d.ph;
+    document.getElementById("press").textContent = d.pressure + " Pa";
+    document.getElementById("sun").textContent = d.sun_intensity + " W/m²";
+    document.getElementById("methane").textContent = d.methane_production + " m³";
+    document.getElementById("algae").textContent = d.algae_activity;
+
+    readingCount++;
+    if (readingCount <= 10 || (readingCount > 10 && readingCount % 5 === 0)) {
+        addToMemory("temp", d.temperature);
+        addToMemory("ph", d.ph);
+        addToMemory("press", d.pressure);
+        addToMemory("sun", d.sun_intensity);
+        addToMemory("methane", d.methane_production);
+        addToMemory("algae", d.algae_activity);
+        addToMemory("time", now);
+        updateChartFromMemory();
+    }
+}
+setInterval(fetchSensorData, 2000);
+</script>
+{% endblock %}

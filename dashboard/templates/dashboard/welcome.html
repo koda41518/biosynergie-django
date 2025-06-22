@@ -1,0 +1,86 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenue sur BioSynergie</title>
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}">
+
+    <style>
+        .top-right {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .top-right-btn {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Segoe UI', sans-serif;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <!--iciiiiiiiii -->
+    <div class="top-left">
+        <a href="{% url 'welcome' %}" class="top-left-btn">🏠 Accueil</a>
+    </div>
+    <div class="top-right">
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="top-right-btn">🔒 Déconnexion</button>
+        </form>
+    </div>
+    <img src="{% static 'dashboard/logo_biosynergie-no_bg.png' %}" alt="Logo BioSynergie"
+         style="width: 280px; max-width: 80%; margin-bottom: 30px;">
+
+    <div class="slogan">Vers une énergie propre, locale et vivante.</div>
+
+    <div class="intro-layout">
+        <div class="modules">
+            <div class="module">
+                <h3>☀️ Panneau Solaire</h3>
+                <p>Capture l’énergie solaire pour alimenter le système.</p>
+            </div>
+            <div class="module">
+                <h3>🔥 Biodigesteur</h3>
+                <p>Transforme les déchets organiques en biogaz.</p>
+            </div>
+            <div class="module">
+                <h3>💧 Bac à Eau</h3>
+                <p>Rôle tampon et support pour les algues ou refroidissement.</p>
+            </div>
+            <div class="module">
+                <h3>🌿 Bassin à Algues</h3>
+                <p>Absorbe le CO₂ et génère oxygène & électricité verte.</p>
+            </div>
+        </div>
+
+        <div class="illustration schema-wrapper">
+            <img src="{% static 'dashboard/shema_plbd-removebg-preview.png' %}" alt="Schéma BioSynergie" class="schema-img">
+        </div>
+    </div>
+
+    <div class="btn-container">
+        <a href="/mode-emploi/">📘 Mode d’emploi</a>
+        <a href="{% url 'donnees' %}">📊 Données en temps réel</a>
+        <a href="/diagnostic/">🧠 Diagnostic intelligent</a>
+        <!--a href="{% url 'welcome' %}">🏠 Accueil</a>  -->
+</div>
+    </div>
+
+    <footer>
+        Prototype conçu pour une gestion durable de l’énergie en autonomie.
+    </footer>
+</body>
+
+
+</html>

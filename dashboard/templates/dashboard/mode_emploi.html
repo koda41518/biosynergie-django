@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mode d’emploi – BioSynergie</title>
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}">
+
+<script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\(', '\)']],
+            displayMath: [['$$', '$$']]
+        },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+</head>
+<body>
+    <!--iciiiiiiiii -->
+    <div class="top-left">
+        <a href="{% url 'welcome' %}" class="top-left-btn">🏠 Accueil</a>
+    </div>
+    <img src="{% static 'dashboard/logo_biosynergie-no_bg.png' %}" alt="Logo BioSynergie"
+         style="width: 240px; max-width: 80%; margin-bottom: 30px;">
+    <h1>📘 Mode d’emploi du système BioSynergie</h1>
+    <p class="slogan">Comprendre les mécanismes & modéliser la stabilité du système 🌱</p>
+
+    <!-- === BIODIGESTEUR === -->
+    <h2>🧪 Biodigesteur – Production de biogaz</h2>
+    <div class="calc-block">
+        <p>Le biodigesteur transforme les déchets organiques en biogaz, principalement du méthane.</p>
+        <p>$$V_{\text{biogaz}} = Y_{\text{biogaz}} \times m_{\text{MO}}$$</p>
+        <p>avec Y<sub>biogaz</sub> ≈ 0.35–0.6 m³/kg.</p>
+        <p>$$V_{\text{CH}_4} = f_{\text{CH}_4} \times V_{\text{biogaz}}$$</p>
+        <p>avec f<sub>CH₄</sub> ≈ 0.5–0.7.</p>
+    </div>
+
+    <div class="illustration">
+        <img src="{% static 'dashboard/biodigesteur.png' %}" alt="Biodigesteur" class="illustration-img" style="max-width: 400px; height: auto;">
+    </div>
+
+    <!-- === SÉPARATION GAZ === -->
+    <h2>💧 Séparation CH₄ / CO₂ – Colonne de lavage</h2>
+    <div class="calc-block">
+        <p>Le CO₂ est dissous dans l’eau selon la loi de Henry :</p>
+        <p>$$ C_{CO₂} = k_{H} × P_{CO₂} $$</p>
+        <p>avec k<sub>H</sub> ≈ 3.3 × 10⁻² mol/(L·atm)</p>
+    </div>
+
+    <div class="illustration">
+        <img src="{% static 'dashboard/colonne_eau.png' %}" alt="Colonne de lavage" class="illustration-img" style="max-width: 250px; height: auto;">
+    </div>
+
+    <!-- === ALGUES === -->
+    <h2>🌱 Culture d’algues – Fixation du CO₂</h2>
+    <div class="calc-block">
+        <p>Les algues absorbent le CO₂ dissous et produisent de l’oxygène par photosynthèse :</p>
+        <p>$$ μ = μ_{max} × (I / (K_{I} + I)) × (C / (K_{C} + C)) $$</p>
+        <p>I = lumière (W/m²), C = concentration CO₂</p>
+        <p>$$ 6CO₂ + 6H₂O + lumière → C₆H₁₂O₆ + 6O₂ $$</p>
+    </div>
+
+    <div class="illustration">
+        <img src="{% static 'dashboard/algae_tank.png' %}" alt="Bassin à algues" class="illustration-img" style="max-width: 250px; height: auto;">
+    </div>
+
+    <!-- === SOLAIRE === -->
+    <h2>☀️ Panneaux solaires – Production électrique</h2>
+    <div class="calc-block">
+        <p>Les panneaux solaires convertissent la lumière en énergie électrique :</p>
+        <p>$$ E = G × A × η × t $$</p>
+        <p>G = irradiance, A = surface, η = rendement, t = durée</p>
+    </div>
+
+    <div class="illustration">
+        <img src="{% static 'dashboard/solar_panel.png' %}" alt="Panneau Solaire" class="illustration-img" style="max-width: 400px; height: auto;">
+    </div>
+
+    <!-- === RENDEMENTS === -->
+    <h2>🔁 Rendements typiques</h2>
+    <div class="calc-block">
+        <ul>
+            <li>Biodigesteur : 60–75% CH₄</li>
+            <li>Séparation CH₄ : 90–95%</li>
+            <li>Culture d’algues : ~1.5 g/L/jour</li>
+            <li>Panneau solaire : 15–22%</li>
+        </ul>
+    </div>
+
+    <footer>
+        Calculs estimatifs à but pédagogique – BioSynergie © 2025
+    </footer>
+</body>
+
+</html>

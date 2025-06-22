@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #022B3A;
+            margin: 0;
+            padding: 0;
+        }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .login-card {
+            background-color: #011F2A;
+            border-radius: 12px;
+            padding: 40px 30px;
+            box-shadow: 0 0 15px 2px rgba(0, 255, 0, 0.1);
+            text-align: center;
+            width: 350px;
+        }
+
+        .login-card img {
+            width: 200px;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            color: #00FF00;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: white;
+            text-align: left;
+            margin-bottom: 5px;
+            margin-left: 8px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #00DDB3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: white;
+            font-size: 0.85em;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .register-link {
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .register-link a {
+            color: #00ffcc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <img src="{% static 'dashboard/logo_biosynergie-no_bg.png' %}" alt="Logo BioSynergie">
+            <h2>Connexion</h2>
+
+            {% if form.errors %}
+                <div class="error-message">Nom d'utilisateur ou mot de passe incorrect.</div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <label for="username">Nom d'utilisateur</label>
+                <input type="text" id="username" name="username" required value="{{ form.username.value|default:'' }}">
+
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" required>
+
+                <button type="submit">Se connecter</button>
+            </form>
+
+            <div class="register-link">
+                <span style="color: white;">Pas encore de compte ?</span> <a href="{% url 'register' %}">Créer un compte</a>
+            </div>
+
+            <div class="footer">
+                Accès réservé | BioSynergie © 2025
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+

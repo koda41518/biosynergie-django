@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-gcveck%_92)wa_-hosip=wk0tx*(*x(hv&(&+(_$-pz!&pk35(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['biosynergie-django.onrender.com']
 
 
 # Application definition

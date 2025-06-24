@@ -3,7 +3,9 @@ services:
     name: biosynergie
     env: python
     buildCommand: ""
-    startCommand: gunicorn capteurs_site.wsgi:application
+    startCommand: |
+      python manage.py collectstatic --noinput &&
+      gunicorn capteurs_site.wsgi:application
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: capteurs_site.settings

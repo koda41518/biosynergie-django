@@ -110,3 +110,15 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'dashboard/register.html', {'form': form})
+
+
+
+
+from django.shortcuts import render
+
+def welcome_view(request):
+    return render(request, 'dashboard/welcome.html')
+
+
+def mode_emploi_view(request):
+    return render(request, 'dashboard/mode_emploi.html')

@@ -25,8 +25,11 @@ SECRET_KEY = 'django-insecure-gcveck%_92)wa_-hosip=wk0tx*(*x(hv&(&+(_$-pz!&pk35(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['biosynergie-django.onrender.com']
-
+ALLOWED_HOSTS = [
+    '127.0.0.1',       # pour le local
+    'localhost',       # pour le local aussi
+    'biosynergie-django.onrender.com',  # pour le déploiement
+]
 
 # Application definition
 
@@ -128,9 +131,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 600
 
 
-
 import os
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dashboard/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Facultatif (bon pour debug prod) :
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

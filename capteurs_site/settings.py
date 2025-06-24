@@ -131,12 +131,16 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 600
 
 
+
 import os
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dashboard/static')]
+
+# Ce dossier contient directement les fichiers CSS/PNG
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'dashboard', 'static', 'dashboard')]
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Facultatif (bon pour debug prod) :
+# Facultatif (pour gérer les fichiers média si un jour tu ajoutes des uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
